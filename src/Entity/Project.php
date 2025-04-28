@@ -59,7 +59,7 @@ class Project
 
     public function setType(string $type): self
     {
-        $allowedTypes = ['perso', 'academique', 'professionnel'];
+        $allowedTypes = ['perso', 'academique', 'pro'];
         if (!in_array($type, $allowedTypes)) {
             throw new \InvalidArgumentException("Type must be 'perso', 'academique', or 'professionnel'.");
         }
