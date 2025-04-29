@@ -47,6 +47,9 @@ class Project
     #[ORM\Column(type: 'datetime', nullable: true)]
     private ?DateTimeInterface $updatedAt = null;
 
+    #[ORM\Column(length: 255)]
+    private ?string $semestre = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -172,5 +175,17 @@ class Project
     public function setUpdatedAt(?DateTimeInterface $updatedAt): void
     {
         $this->updatedAt = $updatedAt;
+    }
+
+    public function getSemestre(): ?string
+    {
+        return $this->semestre;
+    }
+
+    public function setSemestre(string $semestre): static
+    {
+        $this->semestre = $semestre;
+
+        return $this;
     }
 }

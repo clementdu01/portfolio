@@ -15,4 +15,20 @@ final class MainController extends AbstractController
             'controller_name' => 'MainController',
         ]);
     }
+
+    #[Route('/tkt', name: 'app_main_2')]
+    public function index2(): Response
+    {
+        return $this->render('project/index.html.twig', [
+            'controller_name' => 'MainController',
+        ]);
+    }
+
+    #[Route('/tkt2', name: 'app_main_3')]
+    public function index3(): Response
+    {
+        return $this->render('test3/index.html.twig', [
+            'controller_name' => 'MainController',
+        ]);
+    }
 }

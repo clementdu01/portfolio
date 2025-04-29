@@ -1,0 +1,362 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Portfolio - Ton Nom Ici{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ asset('assets/styles/app.css') }}">
+    <style>
+        body {
+            transition: background-color 0.5s ease, color 0.5s ease;
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+        }
+        /* Header et navigation */
+        .header {
+            display: flex;
+            flex-direction: column;
+            background: linear-gradient(135deg, rgba(255,107,107,0.3), rgba(0,173,181,0.3));
+            box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+            padding: 0.5rem 1rem;
+        }
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        nav {
+            margin-top: 0.5rem;
+        }
+        nav ul {
+            list-style: none;
+            display: flex;
+            gap: 1rem;
+            padding: 0;
+            margin: 0;
+        }
+        nav ul li a {
+            text-decoration: none;
+            color: var(--text-color);
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        nav ul li a:hover {
+            color: var(--hover-color);
+        }
+        /* Slider horizontal en forme d\'épée */
+        .theme-slider {
+            position: relative;
+            width: 200px;
+            height: 60px;
+            margin-right: 1rem;
+        }
+        .theme-slider input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .slider-track {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            width: 100%;
+            height: 6px;
+            background: var(--secondary-color);
+            border-radius: 3px;
+            transform: translateY(-50%);
+        }
+        .slider-thumb {
+            position: absolute;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 50px;
+            height: 50px;
+            background: var(--hover-color);
+            clip-path: polygon(50% 0%, 60% 40%, 75% 50%, 60% 60%, 50% 100%, 40% 60%, 25% 50%, 40% 40%);
+            transition: left 0.3s ease;
+            cursor: pointer;
+        }
+        .theme-slider input:checked + .slider-track + .slider-thumb {
+            left: 20px;
+        }
+        .theme-slider input:not(:checked) + .slider-track + .slider-thumb {
+            left: calc(100% - 20px);
+        }
+        /* Bouton thème */
+        .btn-theme {
+            padding: 0.6rem 1.2rem;
+            border: none;
+            border-radius: 5px;
+            background-color: var(--secondary-color);
+            color: var(--text-color);
+            cursor: pointer;
+            transition: background 0.3s;
+            font-weight: 500;
+        }
+        .btn-theme:hover {
+            background-color: var(--hover-color);
+        }
+        /* Thèmes */
+        .theme-asuna {
+            --bg-color: #FFF7F0;
+            --secondary-color: #FF6B6B;
+            --hover-color: #FFD93D;
+            --text-color: #5C2A2A;
+            --halo-color: rgba(255,107,107,0.3);
+        }
+        .theme-kirito {
+            --bg-color: #121212;
+            --secondary-color: #1F1F1F;
+            --hover-color: #00ADB5;
+            --text-color: #EEEEEE;
+            --halo-color: rgba(0,173,181,0.3);
+        }
+        /* Barre de progression */
+        .progress-skill {
+            background-color: var(--secondary-color);
+            border-radius: 5px;
+            overflow: hidden;
+            padding: 5px 0;
+        }
+        .theme-kirito .progress-skill {
+            background-color: var(--hover-color) !important;
+        }
+        /* Sections et grid */
+        .section {
+            padding: 4rem 2rem;
+            text-align: center;
+            margin: 2rem 0;
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+        .section:hover {
+            transform: scale(1.02);
+        }
+        .grid {
+            display: flex;
+            gap: 2rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        /* Conteneur de carte avec halo en fond */
+        .card-wrapper {
+            position: relative;
+            display: inline-block;
+            z-index: 0;
+            transition: transform 0.3s ease;
+        }
+
+        .card-wrapper:hover {
+            transform: translateY(-5px);
+        }
+
+        .card-wrapper:hover::before {
+            filter: blur(8px);
+            opacity: 0.7;
+            transform: scale(1.15);
+        }
+
+        .card-wrapper::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--halo-color);
+            clip-path: polygon(25% 5%, 75% 5%, 95% 50%, 75% 95%, 25% 95%, 5% 50%);
+            transform: scale(1.1);
+            z-index: -1;
+            filter: blur(5px);
+            opacity: 0.5;
+            transition: transform 0.3s ease, filter 0.3s ease, opacity 0.3s ease;
+            animation: pulse 3s infinite alternate;
+        }
+        /* Style commun aux cartes */
+        .card {
+            position: relative;
+            z-index: 2;
+            width: 300px;
+            padding: 1rem;
+            background: linear-gradient(145deg, rgba(255,255,255,0.1), rgba(0,0,0,0.1));
+            clip-path: polygon(25% 5%, 75% 5%, 95% 50%, 75% 95%, 25% 95%, 5% 50%);
+            border: 2px solid transparent;
+            animation: neon 3s infinite alternate;
+            cursor: pointer;
+            overflow: visible;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .card-wrapper:hover .card {
+            box-shadow: 0 0.75rem 1.5rem rgba(0,0,0,0.4);
+        }
+        @keyframes neon {
+            from { border-color: rgba(0,255,255,0.3); }
+            to { border-color: rgba(0,255,255,0.8); }
+        }
+        @keyframes pulse {
+            from { opacity: 0.1; transform: scale(1.05); }
+            to { opacity: 0.4; transform: scale(1.15); }
+        }
+        /* Carte alo : même forme, légèrement plus grande et vide */
+        .card-alo {
+            width: 320px;
+            height: 350px;
+            background: linear-gradient(145deg, rgba(255,255,255,0.1), rgba(0,0,0,0.1));
+            clip-path: polygon(25% 5%, 75% 5%, 95% 50%, 75% 95%, 25% 95%, 5% 50%);
+            border: 2px solid transparent;
+        }
+        /* Boutons */
+        .btn {
+            padding: 0.75rem 1.5rem;
+            margin: 0.75rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background 0.3s;
+        }
+        .btn-contact { background-color: var(--secondary-color); color: var(--text-color); }
+        .btn-download { background-color: var(--hover-color); color: var(--text-color); }
+        .btn:hover { filter: brightness(1.1); }
+        /* Modal */
+        .modal {
+            position: fixed;
+            top: 10%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: auto;
+            z-index: 100;
+            display: none;
+        }
+        .modal.active { display: block; }
+        .modal-content {
+            background: var(--bg-color);
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.25);
+            position: relative;
+        }
+        .modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <header class="header">
+        <div class="header-top">
+            <div class="logo">Portfolio</div>
+            <div style="display: flex; align-items: center;">
+                <div class="theme-slider">
+                    <input type="checkbox" id="theme-toggle">
+                    <div class="slider-track"></div>
+                    <div class="slider-thumb" onclick="toggleTheme()"></div>
+                </div>
+                <button class="btn-theme" onclick="toggleTheme()">Thème</button>
+            </div>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="#presentation">Accueil</a></li>
+                <li><a href="#competences">Compétences</a></li>
+                <li><a href="#projets">Projets</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section id="presentation" class="section">
+        <h2>Clément Carvalho</h2>
+        <h3>Développeur Fullstack | Passionné par le Web et les Nouvelles Technologies</h3>
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur lacinia urna eu bibendum maximus, sapien mi porta turpis.</p>
+        <div>
+            <button class="btn btn-contact">Me Contacter</button>
+            <button class="btn btn-download">Télécharger mon CV</button>
+        </div>
+    </section>
+
+    <section id="competences" class="section">
+        <h2>Compétences Techniques</h2>
+        <div class="grid">
+            {% for language in ['HTML', 'CSS', 'JavaScript', 'React', 'Node.js'] %}
+                <div class="card-wrapper" onclick="openModal('modal-{{ language|lower }}')">
+                    <div class="card">
+                        <h3>{{ language }}</h3>
+                        <div>
+                            <div style="background: #ccc; border-radius: 5px; overflow: hidden;">
+                                <div class="progress-skill" style="width: 70%;"></div>
+                            </div>
+                            <small>Niveau 70&#37;</small>
+                        </div>
+                    </div>
+                </div>
+                <div id="modal-{{ language|lower }}" class="modal">
+                    <div class="modal-content">
+                        <button class="modal-close" onclick="closeModal('modal-{{ language|lower }}')">&times;</button>
+                        <h3>{{ language|capitalize }} - Détails</h3>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Expérience et projets réalisés avec {{ language|capitalize }}.</p>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </section>
+
+    <section id="projets" class="section">
+        <h2>Mes Projets</h2>
+        <div class="grid">
+            {% for category in ['Personnels', 'Académiques', 'Professionnels'] %}
+                <div class="card" onclick="openModal('modal-projet-{{ category|lower }}')">
+                    {% if category == 'Personnels' %}
+                        <i class="fa-solid fa-house" style="font-size:2rem; margin-bottom:0.5rem;"></i>
+                    {% elseif category == 'Académiques' %}
+                    {% elseif category == 'Professionnels' %}
+                    {% endif %}
+                    <i class="fa-solid fa-briefcase" style="font-size:2rem; margin-bottom:0.5rem;"></i>
+                    <i class="fa-solid fa-graduation-cap" style="font-size:2rem; margin-bottom:0.5rem;"></i>
+                    <h3>Projets {{ category }}</h3>
+                    <p>Une courte description des projets {{ category|lower }}.</p>
+                </div>
+                <div id="modal-projet-{{ category|lower }}" class="modal">
+                    <div class="modal-content">
+                        <button class="modal-close" onclick="closeModal('modal-projet-{{ category|lower }}')">&times;</button>
+                        <h3>Projets {{ category|capitalize }}</h3>
+                        <p>Détails des projets&#58; technologies utilisées, liens GitHub/démo et description plus complète.</p>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </section>
+
+    <script>
+        function toggleTheme() {
+            var checkbox = document.getElementById('theme-toggle');
+            checkbox.checked = !checkbox.checked;
+            if (checkbox.checked) {
+                document.body.classList.add('theme-kirito');
+                document.body.classList.remove('theme-asuna');
+            } else {
+                document.body.classList.add('theme-asuna');
+                document.body.classList.remove('theme-kirito');
+            }
+        }
+        function openModal(id) {
+            document.getElementById(id).classList.add('active');
+        }
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('active');
+        }
+    </script>
+{% endblock %}

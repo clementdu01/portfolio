@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Portfolio - Fullstack</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg: #0d1117;
+            --text: #ffffff;
+            --muted: #8b949e;
+            --accent: #00d8ff;
+            --card-bg: #161b22;
+            --progress-bg: #2c313a;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 2rem;
+            background: var(--card-bg);
+            border-bottom: 1px solid var(--accent);
+            flex-wrap: wrap;
+        }
+
+        header .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+        }
+
+        header nav ul {
+            list-style: none;
+            display: flex;
+            gap: 1.5rem;
+            margin: 0;
+        }
+
+        header nav a {
+            color: var(--text);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        header nav a.active,
+        header nav a:hover {
+            color: var(--accent);
+            border-bottom: 2px solid var(--accent);
+            padding-bottom: 2px;
+        }
+
+        .theme-btn {
+            background: var(--card-bg);
+            border: 1px solid var(--accent);
+            color: var(--text);
+            padding: 0.4rem 0.8rem;
+            border-radius: 0.4rem;
+        }
+
+        .hero {
+            text-align: center;
+            padding: 4rem 2rem;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            font-weight: bold;
+        }
+
+        .hero h3 {
+            font-size: 1.5rem;
+            color: var(--muted);
+            margin-bottom: 1rem;
+        }
+
+        .hero p {
+            max-width: 600px;
+            margin: auto;
+            color: var(--muted);
+        }
+
+        .buttons {
+            margin-top: 2rem;
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .btn-contact,
+        .btn-cv {
+            padding: 0.7rem 1.5rem;
+            border-radius: 0.4rem;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .btn-contact {
+            background: var(--accent);
+            color: black;
+        }
+
+        .btn-cv {
+            background: var(--card-bg);
+            color: white;
+            border: 1px solid var(--accent);
+        }
+
+        .section {
+            padding: 4rem 2rem;
+        }
+
+        .section h2 {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .skills-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 2rem;
+        }
+
+        .skill-card {
+            position: relative;
+            width: 250px;
+            height: 280px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .skill-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            --b: 10px;
+            background: var(--accent);
+            clip-path: polygon(
+                    50% 0,
+                    -50% 50%,
+                    50% 100%,
+                    150% 50%,
+                    50% 0,
+                    50% var(--b),
+                    calc(100% - var(--b)*sin(60deg)) calc(25% + var(--b)*cos(60deg)),
+                    calc(100% - var(--b)*sin(60deg)) calc(75% - var(--b)*cos(60deg)),
+                    50% calc(100% - var(--b)),
+                    calc(var(--b)*sin(60deg)) calc(75% - var(--b)*cos(60deg)),
+                    calc(var(--b)*sin(60deg)) calc(25% + var(--b)*cos(60deg)),
+                    50% var(--b)
+            );
+            z-index: 1;
+        }
+
+        .skill-content {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 0.5rem;
+            color: #fff;
+        }
+
+        .skill-card h3 {
+            margin: 0.5rem 0;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: var(--progress-bg);
+            border-radius: 5px;
+            overflow: hidden;
+            margin: 0.5rem auto;
+            width: 80%;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--accent);
+            width: 70%;
+        }
+
+        .projects-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 2rem;
+        }
+
+        .project-card {
+            background: var(--card-bg);
+            border: 2px solid var(--accent);
+            border-radius: 1rem;
+            padding: 2rem;
+            width: 280px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        #projects .project-icon {
+            position: relative;
+            width: 70px;
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: transparent;
+            margin-bottom: 1rem;
+        }
+
+        #projects .project-icon::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            --b: 5px;
+            background: var(--accent);
+            clip-path: polygon(
+                    50% 0,
+                    -50% 50%,
+                    50% 100%,
+                    150% 50%,
+                    50% 0,
+                    50% var(--b),
+                    calc(100% - var(--b)*sin(60deg)) calc(25% + var(--b)*cos(60deg)),
+                    calc(100% - var(--b)*sin(60deg)) calc(75% - var(--b)*cos(60deg)),
+                    50% calc(100% - var(--b)),
+                    calc(var(--b)*sin(60deg)) calc(75% - var(--b)*cos(60deg)),
+                    calc(var(--b)*sin(60deg)) calc(25% + var(--b)*cos(60deg)),
+                    50% var(--b)
+            );
+            z-index: 1;
+        }
+
+        #projects .project-icon i {
+            position: relative;
+            z-index: 2;
+            font-size: 1.8rem;
+            color: var(--accent);
+        }
+
+        footer {
+            text-align: center;
+            padding: 2rem;
+            color: var(--muted);
+            border-top: 1px solid var(--accent);
+        }
+
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            header nav ul {
+                flex-direction: column;
+                gap: 0.5rem;
+                padding-top: 1rem;
+            }
+
+            .buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+    <script src="https://kit.fontawesome.com/a2c3ed9a8d.js" crossorigin="anonymous"></script>
+</head>
+
+<body>
+<header>
+    <div class="logo">Portfolio</div>
+    <nav>
+        <ul>
+            <li><a href="#home" class="active">Accueil</a></li>
+            <li><a href="#skills">Compétences</a></li>
+            <li><a href="#projects">Projets</a></li>
+        </ul>
+    </nav>
+    <button class="theme-btn">Theme</button>
+</header>
+
+<section class="hero" id="home">
+    <h1>Clément Carvalho</h1>
+    <h3>Développeur Fullstack | Passionné par le Web et les Nouvelles Technologies</h3>
+    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curu-iturir lacinia urun eu bibendum maximus, sapien mi porta.</p>
+    <div class="buttons">
+        <a href="#contact" class="btn-contact">Me Contacter</a>
+        <a href="#" class="btn-cv">Télécharger mon CV</a>
+    </div>
+</section>
+
+<section class="section" id="skills">
+    <h2>Compétences Techniques</h2>
+    <div class="skills-grid">
+        {% for skill in ['HTML', 'CSS', 'JavaScript', 'React'] %}
+            <div class="skill-card">
+                <div class="skill-content">
+                    <h3>{{ skill }}</h3>
+                    <div class="progress-bar">
+                        <div class="progress-fill"></div>
+                    </div>
+                    <p>Niveau 70%</p>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</section>
+
+<section class="section" id="projects">
+    <h2>Mes Projets</h2>
+    <div class="projects-grid">
+        <div class="project-card">
+            <div class="project-icon"><i class="fa-solid fa-house"></i></div>
+            <h3>Projets Personnels</h3>
+            <p>Une courte description des projets personnels</p>
+        </div>
+        <div class="project-card">
+            <div class="project-icon"><i class="fa-solid fa-graduation-cap"></i></div>
+            <h3>Projets Académiques</h3>
+            <p>Une courte description des projets académiques</p>
+        </div>
+        <div class="project-card">
+            <div class="project-icon"><i class="fa-solid fa-briefcase"></i></div>
+            <h3>Projets Professionnels</h3>
+            <p>Une courte description des projets professionnels</p>
+        </div>
+    </div>
+</section>
+
+<footer>
+    &copy; 2025 Clément Carvalho. Tous droits réservés.
+</footer>
+</body>
+</html>
