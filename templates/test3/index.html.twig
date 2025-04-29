@@ -11,9 +11,14 @@
             --bg: #0d1117;
             --text: #ffffff;
             --muted: #8b949e;
-            --accent: #00d8ff;
+            --accent: #009da9;
             --card-bg: #161b22;
             --progress-bg: #2c313a;
+        }
+
+        /* Smooth scroll */
+        html {
+            scroll-behavior: smooth;
         }
 
         body {
@@ -30,6 +35,13 @@
             background: var(--card-bg);
             border-bottom: 1px solid var(--accent);
             flex-wrap: wrap;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            transition: background 0.3s;
+        }
+        header.scrolled {
+            background: rgba(13,17,23,0.9);
         }
 
         header .logo {
@@ -63,10 +75,22 @@
             color: var(--text);
             padding: 0.4rem 0.8rem;
             border-radius: 0.4rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .theme-btn:hover {
+            transform: translateY(-4px) scale(1.05);
+            box-shadow: 0 0.5rem 1rem rgba(0,157,169,0.4);
+        }
+
+        .theme-btn:active {
+            transform: scale(0.95);
         }
 
         .hero {
-            text-align: center;
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: left;
             padding: 4rem 2rem;
         }
 
@@ -83,14 +107,13 @@
 
         .hero p {
             max-width: 600px;
-            margin: auto;
+            margin-bottom: 1rem;
             color: var(--muted);
         }
 
         .buttons {
             margin-top: 2rem;
             display: flex;
-            justify-content: center;
             gap: 1rem;
             flex-wrap: wrap;
         }
@@ -101,6 +124,7 @@
             border-radius: 0.4rem;
             text-decoration: none;
             font-weight: 500;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
 
         .btn-contact {
@@ -114,20 +138,33 @@
             border: 1px solid var(--accent);
         }
 
-        .section {
-            padding: 4rem 2rem;
+        .btn-contact:hover,
+        .btn-cv:hover {
+            transform: translateY(-4px) scale(1.05);
+            box-shadow: 0 0.5rem 1rem rgba(0,157,169,0.4);
         }
 
-        .section h2 {
-            text-align: center;
-            margin-bottom: 2rem;
+        .btn-contact:active,
+        .btn-cv:active {
+            transform: scale(0.95);
+        }
+
+        .section {
+            padding: 4rem 2rem;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+        .section.visible {
+            opacity: 1;
+            transform: translateY(0);
         }
 
         .skills-grid {
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
-            gap: 2rem;
+            gap: 3rem;
         }
 
         .skill-card {
@@ -137,6 +174,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            overflow: visible;
         }
 
         .skill-card::before {
@@ -163,6 +201,12 @@
                     50% var(--b)
             );
             z-index: 1;
+            transition: transform 0.3s ease-in-out, filter 0.3s ease-in-out;
+        }
+
+        .skill-card:hover::before {
+            transform: scale(1.1);
+            filter: drop-shadow(0 0 1rem var(--accent));
         }
 
         .skill-content {
@@ -200,7 +244,7 @@
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
-            gap: 2rem;
+            gap: 3rem;
         }
 
         .project-card {
@@ -283,10 +327,27 @@
                 align-items: center;
             }
         }
+
+        /* Bouton Retour en haut */
+        #backToTop {
+            position: fixed;
+            bottom: 3rem;
+            right: 3rem;
+            background: var(--accent);
+            color: #fff;
+            border: none;
+            border-radius: 50%;
+            width: 3rem;
+            height: 3rem;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 1000;
+            transition: opacity 0.3s;
+        }
     </style>
     <script src="https://kit.fontawesome.com/a2c3ed9a8d.js" crossorigin="anonymous"></script>
 </head>
-
 <body>
 <header>
     <div class="logo">Portfolio</div>
@@ -297,7 +358,7 @@
             <li><a href="#projects">Projets</a></li>
         </ul>
     </nav>
-    <button class="theme-btn">Theme</button>
+    <button class="theme-btn" onclick="toggleTheme()">Theme</button>
 </header>
 
 <section class="hero" id="home">
@@ -351,5 +412,51 @@
 <footer>
     &copy; 2025 Clément Carvalho. Tous droits réservés.
 </footer>
+
+<!-- Bouton Retour en haut -->
+<button id="backToTop" aria-label="Haut de page">↑</button>
+
+<script>
+    const header = document.querySelector('header');
+    const backBtn = document.getElementById('backToTop');
+    const sections = document.querySelectorAll('.section');
+    const navLinks = document.querySelectorAll('header nav a');
+
+    document.addEventListener('scroll', () => {
+        const y = window.scrollY;
+
+        // Changement du fond du header
+        header.classList.toggle('scrolled', y > 50);
+
+        // Affichage/masquage du bouton Retour en haut
+        backBtn.style.display = y > 300 ? 'block' : 'none';
+
+        // Révélation des sections avec un seuil ajusté
+        sections.forEach(sec => {
+            if (sec.getBoundingClientRect().top < window.innerHeight * 0.5) {
+                sec.classList.add('visible');
+            } else {
+                sec.classList.remove('visible');
+            }
+        });
+
+        // Lien actif dans la nav
+        navLinks.forEach(link => {
+            const target = document.querySelector(link.getAttribute('href'));
+            if (target) {
+                const rect = target.getBoundingClientRect();
+                if (rect.top <= 60 && rect.bottom > 60) {
+                    link.classList.add('active');
+                } else {
+                    link.classList.remove('active');
+                }
+            }
+        });
+    });
+
+    backBtn.addEventListener('click', () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+</script>
 </body>
 </html>
