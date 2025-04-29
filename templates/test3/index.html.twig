@@ -27,14 +27,16 @@
             font-family: 'Segoe UI', sans-serif;
         }
 
+        /* Container centralisé */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 8rem;
+        }
+
         header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1.5rem 2rem;
             background: var(--card-bg);
             border-bottom: 1px solid var(--accent);
-            flex-wrap: wrap;
             position: sticky;
             top: 0;
             z-index: 1000;
@@ -42,6 +44,14 @@
         }
         header.scrolled {
             background: rgba(13,17,23,0.9);
+        }
+
+        header .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 0;
+            flex-wrap: wrap;
         }
 
         header .logo {
@@ -77,12 +87,10 @@
             border-radius: 0.4rem;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
-
         .theme-btn:hover {
             transform: translateY(-4px) scale(1.05);
             box-shadow: 0 0.5rem 1rem rgba(0,157,169,0.4);
         }
-
         .theme-btn:active {
             transform: scale(0.95);
         }
@@ -93,31 +101,26 @@
             text-align: left;
             padding: 4rem 2rem;
         }
-
         .hero h1 {
             font-size: 3rem;
             font-weight: bold;
         }
-
         .hero h3 {
             font-size: 1.5rem;
             color: var(--muted);
             margin-bottom: 1rem;
         }
-
         .hero p {
             max-width: 600px;
             margin-bottom: 1rem;
             color: var(--muted);
         }
-
         .buttons {
             margin-top: 2rem;
             display: flex;
             gap: 1rem;
             flex-wrap: wrap;
         }
-
         .btn-contact,
         .btn-cv {
             padding: 0.7rem 1.5rem;
@@ -126,24 +129,20 @@
             font-weight: 500;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
-
         .btn-contact {
             background: var(--accent);
             color: black;
         }
-
         .btn-cv {
             background: var(--card-bg);
             color: white;
             border: 1px solid var(--accent);
         }
-
         .btn-contact:hover,
         .btn-cv:hover {
             transform: translateY(-4px) scale(1.05);
             box-shadow: 0 0.5rem 1rem rgba(0,157,169,0.4);
         }
-
         .btn-contact:active,
         .btn-cv:active {
             transform: scale(0.95);
@@ -311,7 +310,7 @@
         }
 
         @media (max-width: 768px) {
-            header {
+            header .header-content {
                 flex-direction: column;
                 align-items: flex-start;
             }
@@ -339,6 +338,7 @@
             border-radius: 50%;
             width: 3rem;
             height: 3rem;
+            display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
@@ -350,15 +350,19 @@
 </head>
 <body>
 <header>
-    <div class="logo">Portfolio</div>
-    <nav>
-        <ul>
-            <li><a href="#home" class="active">Accueil</a></li>
-            <li><a href="#skills">Compétences</a></li>
-            <li><a href="#projects">Projets</a></li>
-        </ul>
-    </nav>
-    <button class="theme-btn" onclick="toggleTheme()">Theme</button>
+    <div class="container">
+        <div class="header-content">
+            <div class="logo">Portfolio</div>
+            <nav>
+                <ul>
+                    <li><a href="#home" class="active">Accueil</a></li>
+                    <li><a href="#skills">Compétences</a></li>
+                    <li><a href="#projects">Projets</a></li>
+                </ul>
+            </nav>
+            <button class="theme-btn" onclick="toggleTheme()">Theme</button>
+        </div>
+    </div>
 </header>
 
 <section class="hero" id="home">
@@ -425,13 +429,9 @@
     document.addEventListener('scroll', () => {
         const y = window.scrollY;
 
-        // Changement du fond du header
         header.classList.toggle('scrolled', y > 50);
-
-        // Affichage/masquage du bouton Retour en haut
         backBtn.style.display = y > 300 ? 'block' : 'none';
 
-        // Révélation des sections avec un seuil ajusté
         sections.forEach(sec => {
             if (sec.getBoundingClientRect().top < window.innerHeight * 0.5) {
                 sec.classList.add('visible');
@@ -440,7 +440,6 @@
             }
         });
 
-        // Lien actif dans la nav
         navLinks.forEach(link => {
             const target = document.querySelector(link.getAttribute('href'));
             if (target) {
@@ -457,6 +456,10 @@
     backBtn.addEventListener('click', () => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
     });
+
+    function toggleTheme() {
+        // Fonction de changement de thème
+    }
 </script>
 </body>
 </html>
